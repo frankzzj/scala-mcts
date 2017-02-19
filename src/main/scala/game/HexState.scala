@@ -3,13 +3,11 @@ package game
 import bfs.{BFS, BFSNode}
 import mcts.GameState
 
-import scala.collection.mutable
-import scala.collection.mutable.{ListBuffer,Map}
-
+import scala.collection.mutable.{ListBuffer,Map, Set}
 /**
   * Created by culim on 2/24/16.
   */
-case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
+case class HexState(val nRows : Int, val nColumns : Int) extends GameState{
 
     /**
       * Player indices start from 1
@@ -21,20 +19,19 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
 
     var nodeMap : Map[Int, BFSNode] = Map.empty
     var allNodes : Set[BFSNode] = Set.empty
-    var allEdges : Set[Tuple2[BFSNode, BFSNode]] = Set.empty
+    var allEdges : Set[(BFSNode, BFSNode)] = Set.empty
 
     buildGraph
 
     override def getCopy: GameState = {
-        val s : HexState = new HexState(nRows, nColumns)
+        val s : HexState =  HexState(nRows, nColumns)
         s.lastPlayerWhoMoved = lastPlayerWhoMoved
         s.totalNumberOfPlayers = totalNumberOfPlayers
         s.board = board.clone()
         s.nodeMap = nodeMap
         s.allEdges = allEdges
         s.allNodes = allNodes
-
-        return s
+        s
     }
 
     def buildGraph = {
@@ -82,14 +79,12 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
     }
 
     override def getAvailableActions: Set[Int] = {
-        var availableIndices = board.zipWithIndex.filter( x => x._1 == 0)
+        val availableIndices = board.zipWithIndex.filter( x => x._1 == 0)
         val (winner, path) = getPlayerInWinConditions
         if (winner > 0) {
             // Someone has already won, no more actions permitted.
-            return Set.empty;
-        }
-
-        return Set.empty ++ availableIndices.map( x => x._2 )
+             Set.empty;
+        } else Set.empty ++ availableIndices.map( x => x._2 )
     }
 
     override def doAction(action: Int): Unit = {
@@ -97,32 +92,30 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
         board(action) = lastPlayerWhoMoved
     }
 
-    override def getLastPlayerWhoMoved: Int = {
-        return lastPlayerWhoMoved
-    }
+    override def getLastPlayerWhoMoved: Int = lastPlayerWhoMoved
 
     override def getResult(playerIndex: Int): Double = {
         val (winner, path) = getPlayerInWinConditions
         if (winner > 0) {
             // winner found
             if (winner == playerIndex) {
-                return 1.0
+                 1.0
             }
             else {
-                return -1.0
+                 -1.0
             }
         }
         else {
             if (getAvailableActions.isEmpty) {
-                return 0.5
+                 0.5
             }
             else {
-                return 0.0
+                 0.0
             }
         }
     }
 
-    def getPlayerInWinConditions: Tuple2[Int, Array[Int]] = {
+    def getPlayerInWinConditions: (Int, Array[Int]) = {
 
         // player 1 goes horizontal (left edge to right edge)
         var leftIndices : ListBuffer[Int] = ListBuffer.empty
@@ -178,24 +171,18 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
                 }
             }
         }
-        return (0, Array.empty);
+        return (0, Array.empty)
     }
 
-    override def toString : String = {
-        var s = ""
+    override def toString: String = {
+        var s = " "* nRows.toString.length
 
-        for (row <- 0 to nRows.toString.length) {
-            s += " "
-        }
 
-        var (winner, path) = getPlayerInWinConditions
+        val (winner, path) = getPlayerInWinConditions
 
         // -- print the headers (top)
         for (col <- 0 to nColumns-1) {
-            s += ("a".charAt(0) + col).toChar
-            if (col < nColumns-1) {
-                s += " "
-            }
+            s += ("a".charAt(0) + col).toChar + " " * (nColumns - col -1)
         }
         s += "\n"
 
@@ -225,6 +212,6 @@ case class HexState(var nRows : Int, var nColumns : Int) extends GameState{
             }
             s += "\n"
         }
-        return s
+         s
     }
 }

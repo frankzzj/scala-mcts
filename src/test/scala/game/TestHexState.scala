@@ -10,30 +10,28 @@ import scala.util.Random
 class TestHexState extends FunSuite{
 
     test("A newly created HexState should just have a non-empty board.") {
-        var nRows : Int = 11;
-        var nColumns : Int = 11;
-        val state : HexState = new HexState(nRows, nColumns)
+        val nRows  = 11;
+        val nColumns  = 11;
+        val state  = new HexState(nRows, nColumns)
 
         assert(state.board.length == nRows * nColumns)
     }
 
     test("A 5 x 5 board where player 1 picks (0,a) should be valid.") {
-        var nRows : Int = 5;
-        var nColumns : Int = 5;
-        val state : HexState = new HexState(nRows, nColumns)
+        val nRows  = 5;
+        val nColumns  = 5;
+        val state  = new HexState(nRows, nColumns)
 
-        var gridIndex : Int = 0
         state.doAction(0)
 
         assert(state.board(0) == 1, "Player 1 should be in position (a,0)")
     }
 
     test("A 5 x 5 board where player 1 picks (0,a) and player 2 picks (0, b) should be valid.") {
-        var nRows : Int = 5;
-        var nColumns : Int = 5;
-        val state : HexState = new HexState(nRows, nColumns)
+        val nRows = 5
+        val nColumns  = 5
+        val state  = new HexState(nRows, nColumns)
 
-        var gridIndex : Int = 0
         state.doAction(0)
         state.doAction(1)
 
@@ -42,9 +40,9 @@ class TestHexState extends FunSuite{
     }
 
     test("P1 and P2 alternate across 5 turns should reduce #available_actions.") {
-        var nRows : Int = 5;
-        var nColumns : Int = 5;
-        val state : HexState = new HexState(nRows, nColumns)
+        val nRows  = 5
+        val nColumns  = 5
+        val state  = new HexState(nRows, nColumns)
 
 
         val nTurns = 5
@@ -62,9 +60,9 @@ class TestHexState extends FunSuite{
     }
 
     test("P1 in winning configuration has won should be detected.") {
-        var nRows : Int = 5;
-        var nColumns : Int = 5;
-        var state : HexState = new HexState(nRows, nColumns)
+        val nRows = 5
+        val nColumns = 5;
+        val state  = new HexState(nRows, nColumns)
 
         state.board = Array(
             1, 1, 0, 0, 0,
@@ -75,16 +73,16 @@ class TestHexState extends FunSuite{
         )
         state.lastPlayerWhoMoved = 1
 
-        var actual : Int = state.getPlayerInWinConditions._1
-        var expected : Int = 1
+        val actual  = state.getPlayerInWinConditions._1
+        val expected  = 1
 
         assert(expected == actual)
     }
 
     test("P2 in winning configuration has won should be detected.") {
-        var nRows : Int = 5;
-        var nColumns : Int = 5;
-        var state : HexState = new HexState(nRows, nColumns)
+        val nRows = 5
+        val nColumns = 5;
+        val state  = new HexState(nRows, nColumns)
 
         state.board = Array(
             1, 0, 2, 0, 2,
@@ -95,16 +93,16 @@ class TestHexState extends FunSuite{
         )
         state.lastPlayerWhoMoved = 2
 
-        var actual : Int = state.getPlayerInWinConditions._1
-        var expected : Int = 2
+        val actual  = state.getPlayerInWinConditions._1
+        val expected  = 2
 
         assert(expected == actual)
     }
 
     test("P2 in making final move on 7x7 board should not result in a win.") {
-        var nRows : Int = 7;
-        var nColumns : Int = 7;
-        var state : HexState = new HexState(nRows, nColumns)
+        val nRows = 7
+        val nColumns = 7
+        val state  = new HexState(nRows, nColumns)
 
         state.board = Array(
             1, 1, 1, 1, 2, 2, 1,
@@ -116,17 +114,18 @@ class TestHexState extends FunSuite{
                   1, 1, 0, 2, 1, 2, 2
         )
         state.lastPlayerWhoMoved = 1
-
-        var pair = state.getPlayerInWinConditions
+        val pair = state.getPlayerInWinConditions
+        println(state)
+        println(state.lastPlayerWhoMoved)
+        println("Frank" + pair._2.mkString(","))
         assert(pair._1 == 0)
-
         state.doAction(39)
 
-        pair = state.getPlayerInWinConditions
-
+        val pair2 = state.getPlayerInWinConditions
         println(state)
-        println(pair._2.mkString(","))
-        assert(pair._1 == 0)
+        println(state.lastPlayerWhoMoved)
+        println("Frank" + pair2._2.mkString(","))
+        assert(pair2._1 == 0)
 
     }
 

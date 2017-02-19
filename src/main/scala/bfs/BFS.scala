@@ -1,12 +1,12 @@
 package bfs
 
-import scala.collection.mutable.{ListBuffer, Queue, Map}
+import scala.collection.mutable.{ListBuffer, Queue, Map, Set}
 
 /**
   * Created by culim on 2/25/16.
   */
 object BFS {
-    def search(nodes : Set[BFSNode], edges : Set[Tuple2[BFSNode, BFSNode]], start : BFSNode, end : BFSNode) : Array[BFSNode] =  {
+    def search(nodes : Set[BFSNode], edges : Set[(BFSNode, BFSNode)], start : BFSNode, end : BFSNode) : Array[BFSNode] =  {
 
         val parentOf: Map[BFSNode, BFSNode] = Map.empty
         var closed : Set[BFSNode] = Set.empty

@@ -1,8 +1,6 @@
 package mcts
 
-/**
-  * Created by culim on 2/24/16.
-  */
+import scala.collection.mutable.Set
 trait GameState {
 
     def getCopy                         : GameState

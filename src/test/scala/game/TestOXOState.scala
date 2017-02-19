@@ -1,7 +1,7 @@
 package game
 
 import org.scalatest.FunSuite
-
+import scala.collection.mutable.Set
 /**
   * Created by culim on 2/24/16.
   */
@@ -14,7 +14,7 @@ class TestOXOState extends FunSuite{
 
     test("A newly created OXOState should be completely empty.") {
         val state : OXOState = new OXOState
-        val nonZeroes : Array[Int] = state.board.filter(x => x > 0)
+        val nonZeroes = state.board.filter(x => x > 0)
         assert(nonZeroes.length == 0)
     }
 
@@ -31,33 +31,33 @@ class TestOXOState extends FunSuite{
 
     test("A newly created OXOState should have all indices [0..8] as available actions.") {
         val state : OXOState = new OXOState
-        var expected : Set[Int] = Set(0, 1, 2, 3, 4, 5, 6, 7, 8)
+        val expected = Set(0, 1, 2, 3, 4, 5, 6, 7, 8)
         val actual : Set[Int] = state.getAvailableActions
 
-        assert(expected.equals(actual), s"expected=\n${expected};\nactual=\n${actual}")
+        assert(expected.equals(actual), s"expected=\n$expected;\nactual=\n$actual")
     }
 
     test("A newly created OXOState should have a correct toString() representation.") {
-        val state : OXOState = new OXOState
-        val actual : String = state.toString
-        var expected : String = "...\n...\n...\n"
-        assert(expected.equals(actual), s"expected=\n${expected}; actual=\n${actual}")
+        val state = new OXOState
+        val actual  = state.toString
+        val expected  = "...\n...\n...\n"
+        assert(expected.equals(actual), s"expected=\n$expected; actual=\n$actual")
     }
 
     test("After player 1 makes a move on index=0, OXOState should have correct string representation.") {
         val state : OXOState = new OXOState
         state.doAction(0)
-        val actual : String = state.toString
-        var expected : String = "O..\n...\n...\n"
-        assert(expected.equals(actual), s"expected=\n${expected}; actual=\n${actual}")
+        val actual = state.toString
+        val expected  = "O..\n...\n...\n"
+        assert(expected.equals(actual), s"expected=\n$expected; actual=\n$actual")
     }
 
     test("After player 1 makes a move on index=0, and player 2 makes a move on index=8, OXOState should have correct string representation.") {
-        val state : OXOState = new OXOState
+        val state = new OXOState
         state.doAction(0)
         state.doAction(8)
-        val actual : String = state.toString
-        var expected : String = "O..\n...\n..X\n"
+        val actual = state.toString
+        val expected = "O..\n...\n..X\n"
         assert(expected.equals(actual), s"expected=\n${expected}; actual=\n${actual}")
     }
 
@@ -72,8 +72,8 @@ class TestOXOState extends FunSuite{
         val actual1 : Double = state.getResult(1)
         val actual2 : Double = state.getResult(2)
 
-        var expected1 = 1.0
-        var expected2 = 0.0
+        val expected1 = 1.0
+        val expected2 = 0.0
 
         assert(actual1 == expected1, s"expected result of player1 to be $expected1, but was $actual1")
         assert(actual2 == expected2, s"expected result of player1 to be $expected2, but was $actual2")
@@ -92,8 +92,8 @@ class TestOXOState extends FunSuite{
         val actual1 : Double = state.getResult(1)
         val actual2 : Double = state.getResult(2)
 
-        var expected1 = 0.0
-        var expected2 = 1.0
+        val expected1 = 0.0
+        val expected2 = 1.0
 
         assert(actual1 == expected1, s"expected result of player1 to be $expected1, but was $actual1")
         assert(actual2 == expected2, s"expected result of player1 to be $expected2, but was $actual2")
@@ -112,8 +112,8 @@ class TestOXOState extends FunSuite{
         val actual1 : Double = state.getResult(1)
         val actual2 : Double = state.getResult(2)
 
-        var expected1 = 0.5
-        var expected2 = 0.5
+        val expected1 = 0.5
+        val expected2 = 0.5
 
         assert(actual1 == expected1, s"expected result of player1 to be $expected1, but was $actual1")
         assert(actual2 == expected2, s"expected result of player1 to be $expected2, but was $actual2")

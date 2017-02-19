@@ -1,49 +1,47 @@
 package mcts
 
 import scala.collection.mutable.ListBuffer
-
+import scala.collection.mutable.Set
 /**
   * Created by culim on 2/24/16.
   */
 case class GameNode(action : Int = -1, parent : GameNode = null, state : GameState = null) {
 
+    val level: Int = if (parent==null) 0 else parent.level + 1
     var numberOfWins : Double = 0
     var numberOfVisits : Int = 0
-    var children : ListBuffer[GameNode] = ListBuffer.empty
-    var untriedActions : Set[Int] = state.getAvailableActions
-    var playerIndex : Int = state.getLastPlayerWhoMoved
+    val children : ListBuffer[GameNode] = ListBuffer.empty
+    val untriedActions : Set[Int] = state.getAvailableActions
+    val playerIndex : Int = state.getLastPlayerWhoMoved
     val epsilon : Double = 1e-6
 
-    def selectChild : GameNode = {
-        val sortedChildren = children.map( node => (node,
-            (node.numberOfWins.toDouble/node.numberOfVisits) +
+    def selectChild : GameNode = children.map( node => (node,
+            (node.numberOfWins/node.numberOfVisits) +
                 Math.sqrt(2 * Math.log(numberOfVisits+1) / (node.numberOfVisits+epsilon))
-        )).sortBy(_._2)
+        )).sortBy(_._2).last._1
 
-        return sortedChildren.last._1
-    }
 
     def update(result : Double) : Unit = {
-        numberOfVisits += 1;
-        numberOfWins += result;
+        numberOfVisits += 1
+        numberOfWins += result
     }
 
     def addChild(action : Int, state : GameState) : GameNode = {
-        val n = new GameNode(action, this, state)
+        val n =  GameNode(action, this, state)
         untriedActions -= action
         children += n
-
-        return n
+         n
     }
 
-    override def toString() : String = {
-        return  s"[A: $action; " +
-                s"W/V: ${numberOfWins}/${numberOfVisits} = ${numberOfWins.toDouble/numberOfVisits}; " +
-                s"U: ${untriedActions}"
-    }
+    override def toString : String =
+          s"[A: $action; " +
+                s"W/V: $numberOfWins/$numberOfVisits = ${numberOfWins/numberOfVisits}; " +
+                s"U: $untriedActions"
+
+
 
     def treeToString(indent : Int  ) : String = {
-        var s : String = indentString(indent) + this.toString();
+        var s : String = indentString(indent) + this.toString()
         for (c <- children) {
             s += c.treeToString (indent + 1)
         }
@@ -51,22 +49,9 @@ case class GameNode(action : Int = -1, parent : GameNode = null, state : GameSta
         return s
     }
 
-    def indentString(indent : Int) : String = {
-        var s = "\n"
-        for (i <- 1 to indent) {
-            s += "| "
-        }
-
-        return s
-    }
+    def indentString(indent : Int) : String = "\n" + " | " * indent
 
 
-    def childrenToString() : String = {
-        var s = ""
-        for (c <- children)  {
-            s += c.toString() + "\n"
-        }
-        return s
-    }
+    def childrenToString() : String = children.mkString("\n")
 
 }
